@@ -1,0 +1,19 @@
+database:
+  host: "localhost"
+  port: "3306"
+  user: "root"
+  password: ""
+  database_name: "skysong_titles"
+conditions:
+  test:
+    item: GREEN_WOOL
+    name: "Test Condition"
+    description: "This is a test condition"
+injuries:
+    test:
+      item: GREEN_WOOL
+      name: "Test Injury"
+      description: "This is a test injury"
+      severity: "minor"
+      permissions:
+        - "skysongchattweaks.injury.test"

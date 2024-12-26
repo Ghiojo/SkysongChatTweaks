@@ -1,0 +1,23 @@
+name: SkysongChatTweaks
+version: '${version}'
+main: org.skysongdev.skysongchattweaks.SkysongChatTweaks
+api-version: '1.21'
+commands:
+  play:
+    description: Links a played song
+    usage: /play <link> <title>
+  condition:
+    description: Conditions command
+    usage: /condition
+  conditions:
+    description: Conditions command
+    usage: /conditions
+  injury:
+    description: Injuries command
+    usage: /injury
+  injuries:
+    description: Injuries command
+    usage: /injuries
+  screload:
+    description: Reloads the plugin
+    usage: /screload
