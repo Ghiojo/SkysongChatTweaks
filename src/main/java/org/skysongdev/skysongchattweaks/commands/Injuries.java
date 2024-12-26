@@ -68,7 +68,7 @@ public class Injuries implements TabExecutor {
         }
         if(args.length == 2) {
             if (args[0].equalsIgnoreCase("view")) {
-                return List.of("minor", "moderate", "severe");
+                return List.of("minor", "moderate", "severe", "permanent");
             }
         }
         return List.of();

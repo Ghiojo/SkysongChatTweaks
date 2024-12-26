@@ -59,6 +59,7 @@ public class InjuriesGUI implements InventoryHolder {
             desclore = new ArrayList<>();
             desclore.add(getPlugin().getMiniMessage().deserialize(viewableInjuries.get(index+(27*(currentPage-1))).getDescription()));
             desclore.add(getPlugin().getMiniMessage().deserialize("<gold>ID: " + viewableInjuries.get(index+(27*(currentPage-1))).getId()));
+            desclore.add(getPlugin().getMiniMessage().deserialize("<gray>Severity: " + viewableInjuries.get(index+(27*(currentPage-1))).getSeverity()));
             injuryMeta.lore(desclore);
             injuryItem.setItemMeta(injuryMeta);
             this.inventory.setItem(index + 9, injuryItem);
