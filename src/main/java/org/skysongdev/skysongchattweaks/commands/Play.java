@@ -21,6 +21,7 @@ public class Play implements CommandExecutor {
         if(strings.length < 2){
             Component message = plugin.mm.deserialize("<dark_gray>[<gold>SkysongChat<dark_gray>] <gray>You need to put in a Link and A name for the song!");
             commandSender.sendMessage(message);
+            return true;
         }
         String[] buffer = Arrays.copyOfRange(strings, 1, strings.length);
         StringBuilder title = new StringBuilder(strings[1]);
