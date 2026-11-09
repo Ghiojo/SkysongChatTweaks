@@ -16,9 +16,6 @@ repositories {
         url = "https://oss.sonatype.org/content/groups/public/"
     }
     maven {
-        url = 'https://repo.lucko.me'
-    }
-    maven {
         name = "jitpack"
         url = 'https://jitpack.io'
     }
@@ -27,8 +24,6 @@ repositories {
 dependencies {
     compileOnly "io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT"
     implementation files("libs/OpenRP.jar")
-    implementation files("libs/SkysongStats.jar")
-    implementation 'net.luckperms:api:5.4'
     // SkysongStats owns injuries and conditions; its API ships inside the SkysongStats plugin jar.
     // Release 1.3.0 or newer; the calls used here exist since API version 1.2.0 (see ApiVersionCheck).
     compileOnly 'com.github.Ghiojo.SkysongStats:api:1.3.0'
