@@ -17,9 +17,11 @@ import org.skysongdev.skysongchattweaks.condition.ConditionTagListener;
 import org.skysongdev.skysongchattweaks.condition.ConditionTagRenderer;
 import org.skysongdev.skysongchattweaks.concurrent.BukkitMainThread;
 import org.skysongdev.skysongchattweaks.concurrent.MainThread;
+import org.skysongdev.skysongchattweaks.config.ChatTweaksSettings;
 import org.skysongdev.skysongchattweaks.database.Database;
 import org.skysongdev.skysongchattweaks.database.Pinger;
 import org.skysongdev.skysongchattweaks.database.Profile;
+import org.skysongdev.skysongchattweaks.injury.InjuryAwardAnnouncer;
 import org.skysongdev.skysongchattweaks.injury.InjuryTagListener;
 import org.skysongdev.skysongchattweaks.injury.InjuryTagRenderer;
 import org.skysongdev.skysongchattweaks.injury.InjuryTeacher;
@@ -28,6 +30,7 @@ import org.skysongdev.skysongchattweaks.stats.ApiVersionCheck;
 import org.skysongdev.skysongchattweaks.utils.Condition;
 import org.skysongdev.skysongchattweaks.utils.Injury;
 import org.skysongdev.skysongstats.SkysongStats;
+import org.skysongdev.skysongstats.api.AnnouncerRegistration;
 import org.skysongdev.skysongstats.api.SkysongStatsApi;
 
 import java.sql.SQLException;
@@ -45,6 +48,7 @@ public final class SkysongChatTweaks extends JavaPlugin {
     private static LuckPerms luckPerms;
     private static SkysongStats skysongStats;
     private SkysongStatsApi stats;
+    private AnnouncerRegistration awardAnnouncements;
     public static NamespacedKey optionKey;
     public static Database database;
 
@@ -153,6 +157,11 @@ public final class SkysongChatTweaks extends JavaPlugin {
         InjuryTeacher teacher = new InjuryTeacher(audience, stats.profiles(), stats.injuries());
         InjuryTagRenderer injuryTags = new InjuryTagRenderer(stats.injuries(), stats.profiles(), mainThread);
         getServer().getPluginManager().registerEvents(new InjuryTagListener(injuryTags, teacher, mainThread), this);
+        ChatTweaksSettings settings = new ChatTweaksSettings(this::getConfig);
+        getServer().getPluginManager().registerEvents(
+                new InjuryAwardAnnouncer(settings, audience, teacher, getServer()::getPlayer), this);
+        // From here on SkysongStats leaves award messages to us instead of sending them privately.
+        awardAnnouncements = stats.injuries().announceAwards(this);
         getServer().getPluginManager().registerEvents(
                 new ConditionTagListener(new ConditionTagRenderer(stats.conditions())), this);
         getServer().getPluginManager().registerEvents(new ConditionGUIListener(), this);
@@ -231,6 +240,10 @@ public final class SkysongChatTweaks extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        // SkysongStats also drops it when we disable; ending it here keeps that explicit.
+        if (awardAnnouncements != null) {
+            awardAnnouncements.unregister();
+            awardAnnouncements = null;
+        }
     }
 }
