@@ -8,6 +8,15 @@ commands:
   play:
     description: Links a played song
     usage: /play <link> <title>
+    permission: skysongchattweaks.play
   screload:
-    description: Reloads the plugin
+    description: Reloads config.yml
     usage: /screload
+    permission: skysongchattweaks.reload
+permissions:
+  skysongchattweaks.play:
+    description: Use /play
+    default: true
+  skysongchattweaks.reload:
+    description: Use /screload
+    default: op
