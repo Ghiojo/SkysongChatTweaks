@@ -4,19 +4,6 @@ database:
   user: "root"
   password: ""
   database_name: "skysong_titles"
-conditions:
-  test:
-    item: GREEN_WOOL
-    name: "Test Condition"
-    description: "This is a test condition"
-injuries:
-    test:
-      item: GREEN_WOOL
-      name: "Test Injury"
-      description: "This is a test injury"
-      severity: "minor"
-      permissions:
-        - "skysongchattweaks.injury.test"
 
 # The OpenRP channel that injury award messages are said in, from the injured player's
 # position, to everyone who hears that channel there. Everyone who hears it learns the injury.

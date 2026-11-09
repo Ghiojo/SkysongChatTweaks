@@ -24,8 +24,6 @@ import org.skysongdev.skysongchattweaks.injury.InjuryTagRenderer;
 import org.skysongdev.skysongchattweaks.injury.InjuryTeacher;
 import org.skysongdev.skysongchattweaks.listeners.*;
 import org.skysongdev.skysongchattweaks.stats.ApiVersionCheck;
-import org.skysongdev.skysongchattweaks.utils.Condition;
-import org.skysongdev.skysongchattweaks.utils.Injury;
 import org.skysongdev.skysongstats.SkysongStats;
 import org.skysongdev.skysongstats.api.AnnouncerRegistration;
 import org.skysongdev.skysongstats.api.SkysongStatsApi;
@@ -62,8 +60,6 @@ public final class SkysongChatTweaks extends JavaPlugin {
     /** The SkysongStats API, set once {@link #onEnable()} has checked its version. */
     public SkysongStatsApi getStats() { return stats; }
 
-    public ArrayList<Condition> conditions;
-    public ArrayList<Injury> injuries;
     public ArrayList<Profile> profiles;
 
     //TODO: Add a listener that looks for [c_<condition>] to replace the text with a condition
@@ -109,8 +105,6 @@ public final class SkysongChatTweaks extends JavaPlugin {
         InitializeCommands();
         InitializeListeners();
 
-        InitializeConditions();
-        InitializeInjuries();
         saveDefaultConfig();
         InitializeDatabase();
 
@@ -155,7 +149,6 @@ public final class SkysongChatTweaks extends JavaPlugin {
         awardAnnouncements = stats.injuries().announceAwards(this);
         getServer().getPluginManager().registerEvents(
                 new ConditionTagListener(new ConditionTagRenderer(stats.conditions())), this);
-        getServer().getPluginManager().registerEvents(new ProfileUpdateListener(), this);
     }
 
     /** A channel's {@code range} in OpenRP's chat config; empty when it has none, which OpenRP reads as server-wide. */
@@ -163,35 +156,6 @@ public final class SkysongChatTweaks extends JavaPlugin {
         FileConfiguration chat = openrp.getChat().getConfig();
         String path = "channels." + channel + ".range";
         return chat.isSet(path) ? OptionalInt.of(chat.getInt(path)) : OptionalInt.empty();
-    }
-
-    public void InitializeConditions(){
-        conditions = new ArrayList<>();
-        List<String> set = getConfig().getConfigurationSection("conditions").getKeys(false).stream().toList();
-        for(int i = 0; i < set.size(); i++){
-            String name = getConfig().getString("conditions." + set.get(i) + ".name");
-            String description = getConfig().getString("conditions." + set.get(i) + ".description");
-            String item = getConfig().getString("conditions." + set.get(i) + ".item");
-            conditions.add(new Condition(set.get(i), name, description, item));
-        }
-    }
-
-    public void InitializeInjuries(){
-        injuries = new ArrayList<>();
-        List<String> set = getConfig().getConfigurationSection("injuries").getKeys(false).stream().toList();
-        for(int i = 0; i < set.size(); i++){
-            String name = getConfig().getString("injuries." + set.get(i) + ".name");
-            String description = getConfig().getString("injuries." + set.get(i) + ".description");
-            String item = getConfig().getString("injuries." + set.get(i) + ".item");
-            List<String> permissions = getConfig().getStringList("injuries." + set.get(i) + ".permissions");
-            String severity = getConfig().getString("injuries." + set.get(i) + ".severity");
-            injuries.add(new Injury(set.get(i), name, description, item, permissions, severity));
-            for(String perm : permissions){
-                if(Bukkit.getPluginManager().getPermission(perm) == null){
-                    Bukkit.getPluginManager().addPermission(new org.bukkit.permissions.Permission(perm));
-                }
-            }
-        }
     }
 
     public Profile getProfile(String string, String uuid){
