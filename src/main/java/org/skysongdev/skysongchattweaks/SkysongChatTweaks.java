@@ -13,6 +13,8 @@ import org.skysongdev.skysongchattweaks.commands.Conditions;
 import org.skysongdev.skysongchattweaks.commands.Injuries;
 import org.skysongdev.skysongchattweaks.commands.Play;
 import org.skysongdev.skysongchattweaks.commands.Reload;
+import org.skysongdev.skysongchattweaks.condition.ConditionTagListener;
+import org.skysongdev.skysongchattweaks.condition.ConditionTagRenderer;
 import org.skysongdev.skysongchattweaks.concurrent.BukkitMainThread;
 import org.skysongdev.skysongchattweaks.concurrent.MainThread;
 import org.skysongdev.skysongchattweaks.database.Database;
@@ -151,7 +153,8 @@ public final class SkysongChatTweaks extends JavaPlugin {
         InjuryTeacher teacher = new InjuryTeacher(audience, stats.profiles(), stats.injuries());
         InjuryTagRenderer injuryTags = new InjuryTagRenderer(stats.injuries(), stats.profiles(), mainThread);
         getServer().getPluginManager().registerEvents(new InjuryTagListener(injuryTags, teacher, mainThread), this);
-        getServer().getPluginManager().registerEvents(new ConditionChecker(), this);
+        getServer().getPluginManager().registerEvents(
+                new ConditionTagListener(new ConditionTagRenderer(stats.conditions())), this);
         getServer().getPluginManager().registerEvents(new ConditionGUIListener(), this);
         getServer().getPluginManager().registerEvents(new InjuryGUIListener(), this);
         getServer().getPluginManager().registerEvents(new ProfileUpdateListener(), this);
