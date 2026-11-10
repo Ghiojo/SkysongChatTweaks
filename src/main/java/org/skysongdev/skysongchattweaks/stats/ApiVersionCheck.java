@@ -15,8 +15,8 @@ import java.util.regex.Pattern;
  */
 public final class ApiVersionCheck {
 
-    /** The API version every SkysongStats call in this plugin exists in. */
-    public static final String REQUIRED = "1.2.0";
+    /** The API version of the SkysongStats release this plugin is built against (1.3.1). */
+    public static final String REQUIRED = "1.3.0";
 
     private static final Pattern VERSION = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)");
 
