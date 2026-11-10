@@ -12,15 +12,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class ApiVersionCheckTest {
 
     @ParameterizedTest
-    @ValueSource(strings = {"1.2.0", "1.2.1", "1.3.0", "1.10.0", " 1.2.0 "})
+    @ValueSource(strings = {"1.3.0", "1.3.1", "1.4.0", "1.10.0", " 1.3.0 "})
     void acceptsTheRequiredVersionAndNewerMinors(String found) {
         assertTrue(ApiVersionCheck.problemWith(found).isEmpty());
     }
 
     @Test
     void rejectsAnOlderMinorWithOneClearLine() {
-        assertEquals("SkysongChatTweaks needs SkysongStats API 1.2.0 or newer, found 1.1.0.",
-                ApiVersionCheck.problemWith("1.1.0").orElseThrow());
+        assertEquals("SkysongChatTweaks needs SkysongStats API 1.3.0 or newer, found 1.2.0.",
+                ApiVersionCheck.problemWith("1.2.0").orElseThrow());
     }
 
     @Test
@@ -37,7 +37,7 @@ class ApiVersionCheckTest {
     @ParameterizedTest
     @ValueSource(strings = {"2.0.0", "0.9.0"})
     void rejectsAnotherMajor(String found) {
-        assertEquals("SkysongChatTweaks needs SkysongStats API 1.x (1.2.0 or newer), found " + found + ".",
+        assertEquals("SkysongChatTweaks needs SkysongStats API 1.x (1.3.0 or newer), found " + found + ".",
                 ApiVersionCheck.problemWith(found).orElseThrow());
     }
 
