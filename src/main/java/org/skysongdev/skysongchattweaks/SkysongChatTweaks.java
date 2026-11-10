@@ -5,12 +5,9 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import openrp.OpenRP;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.skysongdev.skysongchattweaks.chat.ChatAudience;
-import org.skysongdev.skysongchattweaks.commands.Conditions;
-import org.skysongdev.skysongchattweaks.commands.Injuries;
 import org.skysongdev.skysongchattweaks.commands.Play;
 import org.skysongdev.skysongchattweaks.commands.Reload;
 import org.skysongdev.skysongchattweaks.condition.ConditionTagListener;
@@ -49,7 +46,6 @@ public final class SkysongChatTweaks extends JavaPlugin {
     private static SkysongStats skysongStats;
     private SkysongStatsApi stats;
     private AnnouncerRegistration awardAnnouncements;
-    public static NamespacedKey optionKey;
     public static Database database;
 
     public Database getDatabase() { return database; }
@@ -80,7 +76,6 @@ public final class SkysongChatTweaks extends JavaPlugin {
     @Override
     public void onEnable() {
         plugin = this;
-        optionKey = new NamespacedKey(plugin, "option");
         profiles = new ArrayList<Profile>();
         if (getServer().getPluginManager().isPluginEnabled("OpenRP")) {
             openrp = (OpenRP) getServer().getPluginManager().getPlugin("OpenRP");
@@ -143,10 +138,6 @@ public final class SkysongChatTweaks extends JavaPlugin {
 
     public void InitializeCommands(){
         getCommand("play").setExecutor(new Play(this));
-        getCommand("injury").setExecutor(new Injuries());
-        getCommand("injuries").setExecutor(new Injuries());
-        getCommand("condition").setExecutor(new Conditions());
-        getCommand("conditions").setExecutor(new Conditions());
         getCommand("screload").setExecutor(new Reload());
     }
 
@@ -164,8 +155,6 @@ public final class SkysongChatTweaks extends JavaPlugin {
         awardAnnouncements = stats.injuries().announceAwards(this);
         getServer().getPluginManager().registerEvents(
                 new ConditionTagListener(new ConditionTagRenderer(stats.conditions())), this);
-        getServer().getPluginManager().registerEvents(new ConditionGUIListener(), this);
-        getServer().getPluginManager().registerEvents(new InjuryGUIListener(), this);
         getServer().getPluginManager().registerEvents(new ProfileUpdateListener(), this);
     }
 
