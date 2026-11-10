@@ -1,0 +1,3 @@
+# Build output and local tool state
+.gradle/
+build/
