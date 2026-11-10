@@ -15,13 +15,16 @@ import org.skysongdev.skysongchattweaks.database.Database;
 import org.skysongdev.skysongchattweaks.database.Pinger;
 import org.skysongdev.skysongchattweaks.database.Profile;
 import org.skysongdev.skysongchattweaks.listeners.*;
+import org.skysongdev.skysongchattweaks.stats.ApiVersionCheck;
 import org.skysongdev.skysongchattweaks.utils.Condition;
 import org.skysongdev.skysongchattweaks.utils.Injury;
 import org.skysongdev.skysongstats.SkysongStats;
+import org.skysongdev.skysongstats.api.SkysongStatsApi;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public final class SkysongChatTweaks extends JavaPlugin {
 
@@ -31,6 +34,7 @@ public final class SkysongChatTweaks extends JavaPlugin {
     public static final String PLUGIN_TAG = "<dark_gray>[<gold>SkysongChat<dark_gray>] ";
     private static LuckPerms luckPerms;
     private static SkysongStats skysongStats;
+    private SkysongStatsApi stats;
     public static NamespacedKey optionKey;
     public static Database database;
 
@@ -44,6 +48,9 @@ public final class SkysongChatTweaks extends JavaPlugin {
         return luckPerms;
     }
     public static SkysongStats getSkysongStats() { return skysongStats; }
+
+    /** The SkysongStats API, set once {@link #onEnable()} has checked its version. */
+    public SkysongStatsApi getStats() { return stats; }
 
     public ArrayList<Condition> conditions;
     public ArrayList<Injury> injuries;
@@ -85,6 +92,11 @@ public final class SkysongChatTweaks extends JavaPlugin {
             return;
         }
 
+        if (!connectStatsApi()) {
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
         InitializeCommands();
         InitializeListeners();
 
@@ -95,6 +107,24 @@ public final class SkysongChatTweaks extends JavaPlugin {
 
         Bukkit.getScheduler().runTaskTimer(this, new Pinger(), 0L, 6000L);
 
+    }
+
+    /** Gets the SkysongStats API once and checks that it is new enough. */
+    private boolean connectStatsApi() {
+        SkysongStatsApi api;
+        try {
+            api = SkysongStatsApi.get();
+        } catch (IllegalStateException notEnabled) {
+            getLogger().severe(notEnabled.getMessage());
+            return false;
+        }
+        Optional<String> problem = ApiVersionCheck.problemWith(api.apiVersion());
+        if (problem.isPresent()) {
+            getLogger().severe(problem.get());
+            return false;
+        }
+        stats = api;
+        return true;
     }
 
     public void InitializeCommands(){

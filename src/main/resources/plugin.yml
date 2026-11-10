@@ -2,6 +2,8 @@ name: SkysongChatTweaks
 version: '${version}'
 main: org.skysongdev.skysongchattweaks.SkysongChatTweaks
 api-version: '1.21'
+# Both must be enabled first: the chat tags read OpenRP's channels and the SkysongStats API.
+depend: [OpenRP, SkysongStats]
 commands:
   play:
     description: Links a played song
