@@ -6,14 +6,21 @@ import net.luckperms.api.LuckPermsProvider;
 import openrp.OpenRP;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.skysongdev.skysongchattweaks.chat.ChatAudience;
 import org.skysongdev.skysongchattweaks.commands.Conditions;
 import org.skysongdev.skysongchattweaks.commands.Injuries;
 import org.skysongdev.skysongchattweaks.commands.Play;
 import org.skysongdev.skysongchattweaks.commands.Reload;
+import org.skysongdev.skysongchattweaks.concurrent.BukkitMainThread;
+import org.skysongdev.skysongchattweaks.concurrent.MainThread;
 import org.skysongdev.skysongchattweaks.database.Database;
 import org.skysongdev.skysongchattweaks.database.Pinger;
 import org.skysongdev.skysongchattweaks.database.Profile;
+import org.skysongdev.skysongchattweaks.injury.InjuryTagListener;
+import org.skysongdev.skysongchattweaks.injury.InjuryTagRenderer;
+import org.skysongdev.skysongchattweaks.injury.InjuryTeacher;
 import org.skysongdev.skysongchattweaks.listeners.*;
 import org.skysongdev.skysongchattweaks.stats.ApiVersionCheck;
 import org.skysongdev.skysongchattweaks.utils.Condition;
@@ -25,6 +32,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 public final class SkysongChatTweaks extends JavaPlugin {
 
@@ -138,13 +146,23 @@ public final class SkysongChatTweaks extends JavaPlugin {
 
     public void InitializeListeners(){
         getServer().getPluginManager().registerEvents(new LinkChecker(), this);
-        getServer().getPluginManager().registerEvents(new InjuryChecker(), this);
+        MainThread mainThread = new BukkitMainThread(this);
+        ChatAudience audience = new ChatAudience(getServer()::getOnlinePlayers, this::channelRange);
+        InjuryTeacher teacher = new InjuryTeacher(audience, stats.profiles(), stats.injuries());
+        InjuryTagRenderer injuryTags = new InjuryTagRenderer(stats.injuries(), stats.profiles(), mainThread);
+        getServer().getPluginManager().registerEvents(new InjuryTagListener(injuryTags, teacher, mainThread), this);
         getServer().getPluginManager().registerEvents(new ConditionChecker(), this);
         getServer().getPluginManager().registerEvents(new ConditionGUIListener(), this);
         getServer().getPluginManager().registerEvents(new InjuryGUIListener(), this);
         getServer().getPluginManager().registerEvents(new ProfileUpdateListener(), this);
     }
 
+    /** A channel's {@code range} in OpenRP's chat config; empty when it has none, which OpenRP reads as server-wide. */
+    private OptionalInt channelRange(String channel) {
+        FileConfiguration chat = openrp.getChat().getConfig();
+        String path = "channels." + channel + ".range";
+        return chat.isSet(path) ? OptionalInt.of(chat.getInt(path)) : OptionalInt.empty();
+    }
 
     public void InitializeConditions(){
         conditions = new ArrayList<>();
