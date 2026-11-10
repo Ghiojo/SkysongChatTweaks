@@ -12,8 +12,6 @@ public class Reload implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         getPlugin().reloadConfig();
-        getPlugin().InitializeConditions();
-        getPlugin().InitializeInjuries();
         sender.sendMessage(getPlugin().getMiniMessage().deserialize(PLUGIN_TAG + "Reloaded SkysongChatTweaks config"));
         return true;
     }
