@@ -27,10 +27,14 @@ public final class InjuryTeacher {
 
     /** Teaches the injuries to the players who hear the speaker in this channel. */
     public void teach(Player speaker, String channel, Collection<String> injuryIds) {
-        if (injuryIds.isEmpty()) {
-            return;
+        if (!injuryIds.isEmpty()) {
+            teach(audience.listeners(speaker, channel), injuryIds);
         }
-        for (Player listener : audience.listeners(speaker, channel)) {
+    }
+
+    /** Teaches the injuries to these players. */
+    public void teach(Collection<? extends Player> listeners, Collection<String> injuryIds) {
+        for (Player listener : listeners) {
             profiles.active(listener.getUniqueId()).ifPresent(character -> {
                 for (String injuryId : injuryIds) {
                     injuries.discover(character, injuryId);

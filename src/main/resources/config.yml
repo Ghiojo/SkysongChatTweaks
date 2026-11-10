@@ -17,3 +17,7 @@ injuries:
       severity: "minor"
       permissions:
         - "skysongchattweaks.injury.test"
+
+# The OpenRP channel that injury award messages are said in, from the injured player's
+# position, to everyone who hears that channel there. Everyone who hears it learns the injury.
+announce-channel: in-character
